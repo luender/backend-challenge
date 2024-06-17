@@ -14,7 +14,7 @@ export class UserService {
 
   async register(data: User) {
     try {
-      const { user, email, password, confirmPassword } = data;
+      const { user, password, confirmPassword } = data;
 
       const userAlreadyExists = await this.userRepository.getUser({ user });
 
@@ -30,7 +30,6 @@ export class UserService {
 
       const newUser = {
         user,
-        email,
         password: await bcrypt.hash(password, 8),
       };
 
