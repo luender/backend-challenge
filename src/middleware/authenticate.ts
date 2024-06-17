@@ -5,13 +5,13 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
   const authToken = req.headers.authorization;
 
   if (!authToken) {
-    return res.sendStatus(400).json({ msg: "Token is missing" });
+    return res.status(403).json({ msg: "Token is missing" });
   }
 
   const [, token] = authToken.split(" ");
 
   if (!token) {
-    return res.sendStatus(400).json({ msg: "Token format is invalid" });
+    return res.status(403).json({ msg: "Token format is invalid" });
   }
 
   const secretKey = process.env.SECRET_KEY as string;
@@ -21,6 +21,6 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
 
     return next();
   } catch (error) {
-    return res.sendStatus(401).json({ msg: "Token is invalid" });
+    return res.status(401).json({ msg: "Token is invalid" });
   }
 }

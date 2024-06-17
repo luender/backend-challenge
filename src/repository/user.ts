@@ -1,25 +1,26 @@
 import { PrismaClient } from "@prisma/client";
+import { User } from "../types/user";
 
 export class UserRepository {
   private prisma: PrismaClient;
 
-  constructor() {
-    this.prisma = new PrismaClient();
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
   }
 
-  async register(data: any) {
+  async register(data: User): Promise<void> {
     await this.prisma.user.create({
       data: {
-        username: data.user,
+        user: data.user,
         password: data.password,
       },
     });
   }
 
-  async getUser(user: any): Promise<any> {
+  async getUser(user: Partial<User>): Promise<User | null> {
     const userAlready = await this.prisma.user.findFirst({
       where: {
-        username: user,
+        user: user.user,
       },
     });
 

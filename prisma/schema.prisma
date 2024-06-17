@@ -9,18 +9,19 @@ datasource db {
 
 model User {
   id       String @id @default(uuid())
-  username String @unique
+  user     String @unique
   password String
 }
 
-model Channel {
+model Room {
   id   String @id @default(uuid())
-  name String
+  user String
+  room String
 }
 
 model Message {
   id       String @id @default(uuid())
   content  String
   username String
-  channel  String
+  room     String
 }

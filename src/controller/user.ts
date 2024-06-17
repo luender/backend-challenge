@@ -13,8 +13,10 @@ export class UserController {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const data = req.body;
-      await this.userService.register(data);
-      return res.sendStatus(httpStatus.NO_CONTENT);
+
+      const user = await this.userService.register(data);
+
+      return res.status(httpStatus.OK).send(user);
     } catch (error) {
       return next(error);
     }
@@ -26,9 +28,9 @@ export class UserController {
 
       const token = await this.userService.login(data);
 
-      return res.status(httpStatus.OK).json({ authToken: token });
+      return res.status(httpStatus.OK).send({ authToken: token });
     } catch (error) {
-      return next();
+      return next(error);
     }
   }
 }

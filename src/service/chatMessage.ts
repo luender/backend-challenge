@@ -1,18 +1,20 @@
 import { ChatMessageRepository } from "../repository/chatMessage";
 import { io } from "../server";
+import { Message } from "../types/message";
 
 export class ChatMessageService {
   private chatMessageRepository: ChatMessageRepository;
 
-  constructor() {
-    this.chatMessageRepository = new ChatMessageRepository();
+  constructor(chatMessageRepository: ChatMessageRepository) {
+    this.chatMessageRepository = chatMessageRepository;
   }
 
-  async sendMessage(data: any) {
+  async sendMessage(data: Message) {
     const { user, message, room } = data;
 
     if (room) {
-      io.emit("receiveMessage", { room, message });
+      io.emit("sendMessage", { room, message });
+      return;
     }
 
     io.emit("message", message);

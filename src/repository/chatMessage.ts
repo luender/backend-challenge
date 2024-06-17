@@ -1,17 +1,18 @@
 import { PrismaClient } from "@prisma/client";
+import { Message } from "../types/message";
 
 export class ChatMessageRepository {
   private prisma: PrismaClient;
 
-  constructor() {
-    this.prisma = new PrismaClient();
+  constructor(prisma: PrismaClient) {
+    this.prisma = prisma;
   }
 
-  async saveMessage(data: any) {
+  async saveMessage(data: Message) {
     const { user, message, room } = data;
     await this.prisma.message.create({
       data: {
-        channel: room || "",
+        room: room || "",
         content: message,
         username: user,
       },

@@ -1,15 +1,7 @@
 import { Router } from "express";
-import { UserController } from "../controller/user";
-import { UserService } from "../service/user";
 import { authenticate } from "../middleware/authenticate";
-import { ChatMessageService } from "../service/chatMessage";
-import { ChatMessageController } from "../controller/chatMessage";
-
-const userService = new UserService();
-const userController = new UserController(userService);
-
-const chatMessageService = new ChatMessageService();
-const chatMessageController = new ChatMessageController(chatMessageService);
+import { chatMessageController, roomController } from "./dependencies";
+import { userController } from "./dependencies";
 
 const router = Router();
 
@@ -19,6 +11,11 @@ router.post(
   "/sendMessage",
   authenticate,
   chatMessageController.sendMessage.bind(chatMessageController)
+);
+router.post(
+  "/createRoom",
+  authenticate,
+  roomController.create.bind(roomController)
 );
 
 export { router };

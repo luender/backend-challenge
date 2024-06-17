@@ -3,19 +3,20 @@ import bcrypt from "bcryptjs";
 import { UserRepository } from "../repository/user";
 import { sign } from "jsonwebtoken";
 import { ErrorHandler } from "../utils/errorHandler";
+import { User } from "../types/user";
 
 export class UserService {
   private userRepository: UserRepository;
 
-  constructor() {
-    this.userRepository = new UserRepository();
+  constructor(userRepository: UserRepository) {
+    this.userRepository = userRepository;
   }
 
-  async register(data: any) {
+  async register(data: User) {
     try {
       const { user, email, password, confirmPassword } = data;
 
-      const userAlreadyExists = await this.userRepository.getUser(user);
+      const userAlreadyExists = await this.userRepository.getUser({ user });
 
       if (userAlreadyExists) {
         throw new ErrorHandler(400, "User exists, try again");
@@ -34,23 +35,25 @@ export class UserService {
       };
 
       await this.userRepository.register(newUser);
+
+      return newUser;
     } catch (error) {
       throw error;
     }
   }
 
-  async login(data: any) {
+  async login(data: Partial<User>): Promise<string> {
     try {
       const { user, password } = data;
 
-      const userAlreadyExists = await this.userRepository.getUser(user);
+      const userAlreadyExists = await this.userRepository.getUser({ user });
 
       if (!userAlreadyExists) {
         throw new ErrorHandler(400, "User not exists, try again");
       }
 
       const passwordMatch = await bcrypt.compare(
-        password,
+        password as string,
         userAlreadyExists.password
       );
 
